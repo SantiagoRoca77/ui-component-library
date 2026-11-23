@@ -1,11 +1,19 @@
-import { Component, signal } from '@angular/core';
+import {ChangeDetectionStrategy, Component, signal} from  '@angular/core';
+import {Button} from 'ui-lib';
 
-@Component({
-  imports: [],
+@Component ({
   selector: 'app-root',
-  styleUrl: './app.css',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [Button],
   templateUrl: './app.html',
+  styleUrl: './app.css',
 })
+
 export class App {
-  protected readonly title = signal('demo-app');
+  protected readonly lastClick = signal('ninguno');
+
+  protected onClick(origin: string): void{
+    this.lastClick.set(origin);
+  }
 }

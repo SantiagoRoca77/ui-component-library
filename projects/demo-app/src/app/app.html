@@ -1,1 +1,22 @@
-<h1 class="p-6 text -3xl font-bold text-green-400">Tailwind funciona </h1>
+<main class="min-h-screen space-y-6 bg-lab-900 p-8">
+  <h1 class="text-3xl font-bold text-portal-400">Prueba de ui-button</h1>
+
+  <div class="flex flex-wrap items-center gap-4">
+    <ui-button label="Primary" variant="primary" (clicked)="onClick('primary')" />
+    <ui-button label="Secondary" variant="secondary" (clicked)="onClick('secondary')" />
+    <ui-button label="Danger" variant="danger" (clicked)="onClick('danger')" />
+  </div>
+
+  <div class="flex flex-wrap items-center gap-4">
+    <ui-button label="Small" size="sm" (clicked)="onClick('sm')" />
+    <ui-button label="Medium" size="md" (clicked)="onClick('md')" />
+    <ui-button label="Large" size="lg" (clicked)="onClick('lg')" />
+  </div>
+
+  <div class="flex flex-wrap items-center gap-4">
+    <ui-button label="Disabled" [disabled]="true" (clicked)="onClick('disabled')" />
+    <ui-button label="Cargando" [loading]="true" (clicked)="onClick('loading')" />
+  </div>
+
+  <p class="text-slate-300">Último click: <span class="font-bold text-morty">{{ lastClick() }}</span></p>
+</main>
