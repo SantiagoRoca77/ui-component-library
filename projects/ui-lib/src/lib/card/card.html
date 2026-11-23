@@ -1,0 +1,19 @@
+<section [class]="containerClasses()">
+  <header
+    class="cursor-pointer border-b border-lab-700 px-5 py-4 transition hover:bg-lab-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-portal-400"
+    tabindex="0"
+    role="button"
+    (click)="onHeaderClick()"
+    (keydown.enter)="onHeaderClick()"
+    (keydown.space)="onHeaderClick(); $event.preventDefault()"
+  >
+    <h2 class="text-lg font-bold text-portal-400">{{ title() }}</h2>
+    @if (subtitle()) {
+      <p class="mt-1 text-sm text-slate-400">{{ subtitle() }}</p>
+    }
+  </header>
+
+  <div class="px-5 py-4 text-slate-200">
+    <ng-content />
+  </div>
+</section>

@@ -1,5 +1,5 @@
 <main class="min-h-screen space-y-6 bg-lab-900 p-8">
-  <h1 class="text-3xl font-bold text-portal-400">Prueba de ui-button</h1>
+  <h1 class="text-3xl font-bold text-portal-400">Prueba de componentes</h1>
 
   <div class="flex flex-wrap items-center gap-4">
     <ui-button label="Primary" variant="primary" (clicked)="onClick('primary')" />
@@ -18,5 +18,19 @@
     <ui-button label="Cargando" [loading]="true" (clicked)="onClick('loading')" />
   </div>
 
-  <p class="text-slate-300">Último click: <span class="font-bold text-morty">{{ lastClick() }}</span></p>
+  <div class="grid gap-4 md:grid-cols-3">
+    <ui-card title="Raised" subtitle="Con sombra" elevation="raised" (headerClicked)="onClick('card raised')">
+      <p>Contenido proyectado con ng-content.</p>
+    </ui-card>
+    <ui-card title="Flat" elevation="flat" (headerClicked)="onClick('card flat')">
+      <p>Sin sombra y sin subtítulo.</p>
+    </ui-card>
+    <ui-card title="Outlined" subtitle="Con borde" elevation="outlined" (headerClicked)="onClick('card outlined')">
+      <ui-button label="Botón dentro de la card" size="sm" />
+    </ui-card>
+  </div>
+
+  <p class="text-slate-300">
+    Último click: <span class="font-bold text-morty">{{ lastClick() }}</span>
+  </p>
 </main>
