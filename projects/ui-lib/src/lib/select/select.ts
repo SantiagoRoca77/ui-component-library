@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input, model, output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, input, model, output } from '@angular/core';
 
 /**Opción mostrada y devuelta por `ui-select`*/
 
-export interface SelectOptions {
+export interface SelectOption {
   /** Texto visible de la opción. */
   label: string;
   /**Valor de la opción */
@@ -11,30 +11,29 @@ export interface SelectOptions {
 
 let nextId = 0;
 
-/**Select reutilizable con etiqueta, placeholder y estado de carga. 
+/**Select reutilizable con etiqueta, placeholder y estado de carga.
  * *
  * @example
  * <ui-select label="Recurso" [options]="opciones" [(value)]="recurso" />
  */
 
-@Component ({
+@Component({
   selector: 'ui-select',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {class: 'block'},
-  templateUrl: './select.html'
+  host: { class: 'block' },
+  templateUrl: './select.html',
 })
-
 export class Select {
   /** Lista de Opciones `{ label, value }` */
 
-  readonly options = input<SelectOptions[]>([]);
+  readonly options = input<SelectOption[]>([]);
 
   /**Etiqueta visible sobre eñ select */
   readonly label = input<string>('');
 
   /**Texto mostrado cuando no hay selección */
-  readonly placeholder= input<string>('Selecciona una opción');
+  readonly placeholder = input<string>('Selecciona una opción');
 
   /**Bloquea la interacción cuando es `true` */
   readonly disabled = input<boolean>(false);
@@ -43,10 +42,10 @@ export class Select {
   readonly loading = input<boolean>(false);
 
   /**Valor seleccionado, con binding bidireccional (`[(value)]`)*/
-  readonly value= model<string | null>(null);
+  readonly value = model<string | null>(null);
 
   /**Se emite con el objeto completo de la opción al cambiar la selección*/
-  readonly selectionChange = output<SelectOptions>();
+  readonly selectionChange = output<SelectOption>();
 
   /** Identificador único para enlazar la etiqueta con el select */
   protected readonly selectId = `ui-select-${nextId++}`;

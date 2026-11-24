@@ -16,7 +16,9 @@
             @for (column of columns(); track column.key) {
               <td class="px-4 py-3"><div class="h-4 animate-pulse rounded bg-lab-700"></div></td>
             }
-            <td class="px-4 py-3"><div class="ml-auto h-4 w-24 animate-pulse rounded bg-lab-700"></div></td>
+            <td class="px-4 py-3">
+              <div class="ml-auto h-4 w-24 animate-pulse rounded bg-lab-700"></div>
+            </td>
           </tr>
         }
       } @else if (errorMessage()) {
@@ -41,8 +43,18 @@
             }
             <td class="px-4 py-3">
               <div class="flex justify-end gap-2">
-                <ui-button label="Ver" size="sm" variant="secondary" (clicked)="trigger('view', row)" />
-                <ui-button label="Eliminar" size="sm" variant="danger" (clicked)="trigger('delete', row)" />
+                <ui-button
+                  label="Ver"
+                  size="sm"
+                  variant="secondary"
+                  (clicked)="trigger('view', row)"
+                />
+                <ui-button
+                  label="Eliminar"
+                  size="sm"
+                  variant="danger"
+                  (clicked)="trigger('delete', row)"
+                />
               </div>
             </td>
           </tr>
