@@ -30,6 +30,23 @@
     </ui-card>
   </div>
 
+  <div class="grid max-w-2xl gap-4 md:grid-cols-3">
+  <ui-select
+    label="Recurso"
+    [options]="resourceOptions"
+    [(value)]="resource"
+    (selectionChange)="onClick('select: ' + $event.label)"
+  />
+  <ui-select label="Cargando" [loading]="true" [options]="resourceOptions" />
+  <ui-select label="Deshabilitado" [disabled]="true" [options]="resourceOptions" />
+</div>
+
+<div class="flex items-center gap-4">
+  <p class="text-slate-300">Valor: <span class="font-bold text-morty">{{ resource() ?? 'ninguno' }}</span></p>
+  <ui-button label="Reiniciar" size="sm" variant="secondary" (clicked)="resource.set(null)" />
+</div>
+
+
   <p class="text-slate-300">
     Último click: <span class="font-bold text-morty">{{ lastClick() }}</span>
   </p>
