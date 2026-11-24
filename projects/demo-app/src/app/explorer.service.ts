@@ -81,7 +81,9 @@ export class ExplorerService {
         error: (error: HttpErrorResponse) => {
           this.records.set([]);
           // La API responde 404 cuando un filtro no tiene resultados: es "vacío", no un error de red.
-          this.error.set(error.status === 404 ? null : 'No se pudo conectar con la API. Intenta de nuevo.');
+          this.error.set(
+            error.status === 404 ? null : 'No se pudo conectar con la API. Intenta de nuevo.',
+          );
           this.loading.set(false);
         },
       });
