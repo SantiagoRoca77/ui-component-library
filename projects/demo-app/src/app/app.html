@@ -1,53 +1,150 @@
-<main class="min-h-screen space-y-6 bg-lab-900 p-8">
-  <h1 class="text-3xl font-bold text-portal-400">Prueba de componentes</h1>
+<div class="min-h-screen bg-lab-900 text-slate-200">
+  <header class="border-b border-lab-700 bg-lab-800 px-4 py-6 sm:px-8">
+    <h1 class="text-3xl font-extrabold text-portal-400 sm:text-4xl">Rick &amp; Morty Explorer</h1>
+    <p class="mt-1 text-sm text-slate-400">
+      Explora personajes, episodios y ubicaciones a través del multiverso.
+    </p>
+  </header>
 
-  <div class="flex flex-wrap items-center gap-4">
-    <ui-button label="Primary" variant="primary" (clicked)="onClick('primary')" />
-    <ui-button label="Secondary" variant="secondary" (clicked)="onClick('secondary')" />
-    <ui-button label="Danger" variant="danger" (clicked)="onClick('danger')" />
-  </div>
+  <main class="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-8">
+    <section class="grid items-start gap-4 sm:grid-cols-2">
+      <ui-select
+        label="Recurso"
+        [options]="resourceOptions"
+        [value]="explorer.resource()"
+        (selectionChange)="onResourceChange($event)"
+      />
 
-  <div class="flex flex-wrap items-center gap-4">
-    <ui-button label="Small" size="sm" (clicked)="onClick('sm')" />
-    <ui-button label="Medium" size="md" (clicked)="onClick('md')" />
-    <ui-button label="Large" size="lg" (clicked)="onClick('lg')" />
-  </div>
+      <div class="space-y-2">
+        <ui-select
+          label="Filtrar por status"
+          placeholder="Todos los status"
+          [options]="statusOptions"
+          [value]="explorer.status()"
+          [disabled]="!explorer.statusFilterEnabled()"
+          (selectionChange)="onStatusChange($event)"
+        />
+        @if (!explorer.statusFilterEnabled()) {
+          <p class="text-xs text-slate-400">
+            El filtro de status solo está disponible para Characters.
+          </p>
+        }
+        @if (explorer.status()) {
+          <ui-button
+            label="Limpiar filtro"
+            size="sm"
+            variant="secondary"
+            (clicked)="explorer.selectStatus(null)"
+          />
+        }
+      </div>
+    </section>
 
-  <div class="flex flex-wrap items-center gap-4">
-    <ui-button label="Disabled" [disabled]="true" (clicked)="onClick('disabled')" />
-    <ui-button label="Cargando" [loading]="true" (clicked)="onClick('loading')" />
-  </div>
+    <ui-table
+      [columns]="columns()"
+      [rows]="explorer.records()"
+      [loading]="explorer.loading()"
+      [errorMessage]="explorer.error()"
+      [emptyMessage]="emptyMessage()"
+      (actionTriggered)="onTableAction($event)"
+    />
 
-  <div class="grid gap-4 md:grid-cols-3">
-    <ui-card title="Raised" subtitle="Con sombra" elevation="raised" (headerClicked)="onClick('card raised')">
-      <p>Contenido proyectado con ng-content.</p>
-    </ui-card>
-    <ui-card title="Flat" elevation="flat" (headerClicked)="onClick('card flat')">
-      <p>Sin sombra y sin subtítulo.</p>
-    </ui-card>
-    <ui-card title="Outlined" subtitle="Con borde" elevation="outlined" (headerClicked)="onClick('card outlined')">
-      <ui-button label="Botón dentro de la card" size="sm" />
-    </ui-card>
-  </div>
+    @if (explorer.error()) {
+      <ui-button label="Reintentar" variant="secondary" (clicked)="explorer.load()" />
+    }
+  </main>
 
-  <div class="grid max-w-2xl gap-4 md:grid-cols-3">
-  <ui-select
-    label="Recurso"
-    [options]="resourceOptions"
-    [(value)]="resource"
-    (selectionChange)="onClick('select: ' + $event.label)"
-  />
-  <ui-select label="Cargando" [loading]="true" [options]="resourceOptions" />
-  <ui-select label="Deshabilitado" [disabled]="true" [options]="resourceOptions" />
+  @if (selected(); as record) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+      role="dialog"
+      aria-modal="true"
+      (click)="closeModals()"
+    >
+      <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto" (click)="$event.stopPropagation()">
+        <ui-card [title]="record.name" [subtitle]="resourceLabel()" elevation="raised">
+          @if (selectedCharacter(); as c) {
+            <img [src]="c.image" [alt]="c.name" class="mb-4 h-40 w-40 rounded-lg object-cover" />
+            <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+              <dt class="font-semibold text-portal-400">ID</dt>
+              <dd>{{ c.id }}</dd>
+              <dt class="font-semibold text-portal-400">Status</dt>
+              <dd>{{ c.status }}</dd>
+              <dt class="font-semibold text-portal-400">Especie</dt>
+              <dd>{{ c.species }}</dd>
+              <dt class="font-semibold text-portal-400">Tipo</dt>
+              <dd>{{ c.type || '—' }}</dd>
+              <dt class="font-semibold text-portal-400">Género</dt>
+              <dd>{{ c.gender }}</dd>
+              <dt class="font-semibold text-portal-400">Origen</dt>
+              <dd>{{ c.origin.name }}</dd>
+              <dt class="font-semibold text-portal-400">Ubicación</dt>
+              <dd>{{ c.location.name }}</dd>
+              <dt class="font-semibold text-portal-400">Episodios</dt>
+              <dd>{{ c.episode.length }}</dd>
+              <dt class="font-semibold text-portal-400">Creado</dt>
+              <dd>{{ c.created }}</dd>
+            </dl>
+          }
+
+          @if (selectedEpisode(); as e) {
+            <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+              <dt class="font-semibold text-portal-400">ID</dt>
+              <dd>{{ e.id }}</dd>
+              <dt class="font-semibold text-portal-400">Código</dt>
+              <dd>{{ e.episode }}</dd>
+              <dt class="font-semibold text-portal-400">Emisión</dt>
+              <dd>{{ e.air_date }}</dd>
+              <dt class="font-semibold text-portal-400">Personajes</dt>
+              <dd>{{ e.characters.length }}</dd>
+              <dt class="font-semibold text-portal-400">Creado</dt>
+              <dd>{{ e.created }}</dd>
+            </dl>
+          }
+
+          @if (selectedLocation(); as l) {
+            <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+              <dt class="font-semibold text-portal-400">ID</dt>
+              <dd>{{ l.id }}</dd>
+              <dt class="font-semibold text-portal-400">Tipo</dt>
+              <dd>{{ l.type }}</dd>
+              <dt class="font-semibold text-portal-400">Dimensión</dt>
+              <dd>{{ l.dimension }}</dd>
+              <dt class="font-semibold text-portal-400">Residentes</dt>
+              <dd>{{ l.residents.length }}</dd>
+              <dt class="font-semibold text-portal-400">Creado</dt>
+              <dd>{{ l.created }}</dd>
+            </dl>
+          }
+
+          <div class="mt-5 flex justify-end">
+            <ui-button label="Cerrar" (clicked)="closeModals()" />
+          </div>
+        </ui-card>
+      </div>
+    </div>
+  }
+
+  @if (pendingDelete(); as record) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="closeModals()"
+    >
+      <div class="w-full max-w-sm" (click)="$event.stopPropagation()">
+        <ui-card title="Confirmar eliminación" elevation="raised">
+          <p>
+            ¿Seguro que quieres eliminar
+            <strong class="text-morty">{{ record.name }}</strong>? Solo se quitará de la lista
+            local.
+          </p>
+          <div class="mt-5 flex justify-end gap-2">
+            <ui-button label="Cancelar" variant="secondary" (clicked)="closeModals()" />
+            <ui-button label="Eliminar" variant="danger" (clicked)="confirmDelete()" />
+          </div>
+        </ui-card>
+      </div>
+    </div>
+  }
 </div>
-
-<div class="flex items-center gap-4">
-  <p class="text-slate-300">Valor: <span class="font-bold text-morty">{{ resource() ?? 'ninguno' }}</span></p>
-  <ui-button label="Reiniciar" size="sm" variant="secondary" (clicked)="resource.set(null)" />
-</div>
-
-
-  <p class="text-slate-300">
-    Último click: <span class="font-bold text-morty">{{ lastClick() }}</span>
-  </p>
-</main>
